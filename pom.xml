@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>sw-drupal</artifactId>
+  <version>0.1</version>
+  <name>Shawware Drupal Upgrade</name>
+  <description>Assists with upgrading a Drupal website.</description>
+  <url>https://github.com/shawware/Drupal</url>
+
+  <parent>
+    <groupId>au.com.shawware</groupId>
+    <artifactId>sw-java-pom</artifactId>
+    <version>1.2.1</version>
+  </parent>
+
+  <scm>
+    <url>https://github.com/shawware/Drupal</url>
+    <connection>scm:git:git://github.com/shawware/Drupal.git</connection>
+    <developerConnection>scm:git:git@github.com:shawware/Drupal.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>au.com.shawware</groupId>
+      <artifactId>sw-util</artifactId>
+      <version>1.2.13</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.13.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>2.13.1</version>
+    </dependency> 
+  </dependencies>
+
+  <organization>
+    <name>shawware</name>
+    <url>http://www.shawware.com.au</url>
+  </organization>
+
+</project>
