@@ -556,14 +556,39 @@ public class DataGenerator extends TableWorker
     {
         List<Column<T>> columns = table.getColumns();
 
-        entities.values().forEach(entity ->
-        {
-            Map<String, String> row = createRow();
-            columns.forEach(column -> {
-                row.put(column.getName(), column.getValue(entity));
+        entities.keySet()
+            .stream()
+            .sorted(this::comparator)
+            .forEach(id -> {
+                T entity = entities.get(id);
+                Map<String, String> row = createRow();
+                columns.forEach(column -> {
+                    row.put(column.getName(), column.getValue(entity));
+                });
+                table.addRow(row);
             });
-            table.addRow(row);
-        });
+    }
+
+    private int comparator(String id1, String id2)
+    {
+        int result;
+        if (id1.contains(":"))
+        {
+            String left1 = id1.substring(0, id1.indexOf(':'));
+            String left2 = id2.substring(0, id2.indexOf(':'));
+            result = Integer.compare(Integer.valueOf(left1), Integer.valueOf(left2));
+            if (result == 0)
+            {
+                String right1 = id1.substring(id1.lastIndexOf(':') + 1);
+                String right2 = id2.substring(id2.lastIndexOf(':') + 1);
+                result = Integer.compare(Integer.valueOf(right1), Integer.valueOf(right2));
+            }
+        }
+        else
+        {
+            result = Integer.compare(Integer.valueOf(id1), Integer.valueOf(id2));
+        }
+        return result;
     }
 
     private void fillTagAssociationTable(Table<Entity> table, Map<String, Node> nodes, QuadFunction<Map<String, String>, Node, Tag, Integer> rowPopulator)
