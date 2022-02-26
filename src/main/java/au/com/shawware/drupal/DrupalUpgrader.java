@@ -83,6 +83,7 @@ public class DrupalUpgrader
         DataRenumberer renumberer = new DataRenumberer();
         
         renumberer.renumberFiles(files, imageMap);
+        renumberer.renumberAliases(aliases);
 
         DataGenerator generator = new DataGenerator("sw_uhm", "d9c_");
 

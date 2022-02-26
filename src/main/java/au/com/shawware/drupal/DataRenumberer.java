@@ -34,12 +34,7 @@ public class DataRenumberer
                     )
                 );
         
-        List<String> fids = files.keySet()
-                .stream()
-                .map(Integer::parseInt)
-                .sorted()
-                .map(Object::toString)
-                .collect(toList());
+        List<String> fids = getSortedIds(files);
         
         for (int id = 0; id < fids.size(); id++)
         {
@@ -56,5 +51,31 @@ public class DataRenumberer
                     file.getId()
             );
         }
+    }
+
+    public void renumberAliases(Map<String, Alias> aliases)
+    {
+        List<String> ids = getSortedIds(aliases);
+        
+        for (int id = 0; id < ids.size(); id++)
+        {
+            String oldId = ids.get(id);
+            
+            Alias alias = aliases.remove(oldId);
+            
+            alias = new Alias(String.valueOf(id + 1), alias.getPath(), alias.getAlias());
+            
+            aliases.put(alias.getId(), alias);
+        }
+    }
+    
+    private List<String> getSortedIds(Map<String, ? extends Entity> entities)
+    {
+        return entities.keySet()
+                .stream()
+                .map(Integer::parseInt)
+                .sorted()
+                .map(Object::toString)
+                .collect(toList());
     }
 }
