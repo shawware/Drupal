@@ -11,7 +11,6 @@ package au.com.shawware.drupal;
  * Common code for services that manipulate tables.
  *
  * @author <a href="mailto:david.shaw@shawware.com.au">David Shaw</a>
- *
  */
 abstract class TableWorker
 {

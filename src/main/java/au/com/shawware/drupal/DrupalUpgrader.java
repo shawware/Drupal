@@ -79,6 +79,10 @@ public class DrupalUpgrader
 
         Map<String, String> imageMap = extractor.getImageMap(files, nodes);
         System.err.format("Images: %d%n", imageMap.size());
+        
+        DataRenumberer renumberer = new DataRenumberer();
+        
+        renumberer.renumberFiles(files, imageMap);
 
         DataGenerator generator = new DataGenerator("sw_uhm", "d9c_");
 
