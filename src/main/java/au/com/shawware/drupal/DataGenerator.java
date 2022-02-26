@@ -370,7 +370,18 @@ public class DataGenerator extends TableWorker
                 .addNumeric("status", (a) -> "1")
                 .build();
 
+        List<Column<Alias>> revisionColumns = new Columns<Alias>()
+                .addNumeric("id", Alias::getId)
+                .addNumeric("revision_id", Alias::getId)
+                .addText("langcode", (a) -> LANG_CODE)
+                .addText("path", (alias) -> "/" + alias.getPath())
+                .addText("alias", (alias) -> "/" + alias.getAlias())
+                .addNumeric("status", (a) -> "1")
+                .addNumeric("revision_default", (a) -> "1")
+                .build();
+
         createAndStoreTable("path_alias", aliases, columns);
+        createAndStoreTable("path_alias_revision", aliases, revisionColumns);
     }
 
     private void addFiles(Map<String, File> files)
