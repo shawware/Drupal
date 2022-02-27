@@ -66,6 +66,11 @@ public class SqlGenerator
 
     private String generateValue(String type, String value)
     {
+        if (value == null)
+        {
+            System.err.format("Null value for type: %s%n", type);
+            value = "NULL";
+        }
         String result = value;
         if (type.equals(Columns.TEXT) && !"NULL".equals(value))
         {

@@ -173,7 +173,8 @@ public class DataExtractor extends TableWorker
                     // If body is contains old-school summary marker, handle it.
                     String body = row.get("body_value");
                     String summary;
-                    if (body.contains(BREAK)) {
+                    if (body.contains(BREAK))
+                    {
                         int index = body.indexOf(BREAK);
                         summary = body.substring(0, index);
                         if (summary.endsWith("\r\n"))
@@ -192,6 +193,10 @@ public class DataExtractor extends TableWorker
                     }
                     node.setSummary(summary);
                     node.setBody(body);
+                    if (body == null)
+                    {
+                        System.err.format("Node %s has null body%n", nid);
+                    }
                     String format = row.get("body_format");
                     if (format == null)
                     {

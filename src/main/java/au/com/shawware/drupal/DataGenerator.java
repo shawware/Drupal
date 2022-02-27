@@ -123,6 +123,10 @@ public class DataGenerator extends TableWorker
         imageMap.forEach((nid, fid) -> {
             File file = files.get(fid);
             FieldValue value = new FieldValue(nid, "0", pictureField, file.getId());
+            if (!nodes.containsKey(nid))
+            {
+                System.err.format("Unknown nid %s%n", nid);
+            }
             value.addExtra("title", nodes.get(nid).getTitle());
             pictures.add(value);
         });
