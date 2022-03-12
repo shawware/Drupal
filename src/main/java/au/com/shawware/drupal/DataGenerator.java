@@ -295,13 +295,18 @@ public class DataGenerator extends TableWorker
                 .addNumeric("revision_id", Node::getId)
                 .addText("langcode", (n) -> LANG_CODE)
                 .addNumeric("delta", (n) -> "0")
-                .addHTML("body_value", Node::getBody)
-                .addHTML("body_summary", (node) -> node.getSummary().orElse(NULL))
+                .addHTML("body_value", (node) -> replaceInternalLinks(node.getBody()))
+                .addHTML("body_summary", (node) -> replaceInternalLinks(node.getSummary().orElse(NULL)))
                 .addText("body_format", (node) -> htmlFormats.get(node.getBodyFormat()))
                 .build();
 
         createAndStoreTable("node__body", nodes, columns);
         createAndStoreTable("node_revision__body", nodes, columns);
+    }
+
+    // Replace "internal:" links as D9 does not have this module.
+    private String replaceInternalLinks(String body) {
+        return body.replaceAll("internal:", "/");
     }
 
     private void addNodeTags(Map<String, Node> nodes)
