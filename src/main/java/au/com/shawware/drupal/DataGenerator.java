@@ -12,8 +12,10 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
+import static java.lang.Integer.valueOf;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
@@ -452,10 +454,8 @@ public class DataGenerator extends TableWorker
     {
         types.values().forEach(type ->
         {
-
             type.getFields().forEach(field ->
             {
-
                 List<Column<FieldValue>> columns = new Columns<FieldValue>()
                         .addText("bundle", (v) -> type.getName())
                         .addNumeric("deleted", (v) -> "0")
@@ -591,50 +591,70 @@ public class DataGenerator extends TableWorker
         {
             String left1 = id1.substring(0, id1.indexOf(':'));
             String left2 = id2.substring(0, id2.indexOf(':'));
-            result = Integer.compare(Integer.valueOf(left1), Integer.valueOf(left2));
+            result = Integer.compare(valueOf(left1), valueOf(left2));
             if (result == 0)
             {
                 String right1 = id1.substring(id1.lastIndexOf(':') + 1);
                 String right2 = id2.substring(id2.lastIndexOf(':') + 1);
-                result = Integer.compare(Integer.valueOf(right1), Integer.valueOf(right2));
+                result = Integer.compare(valueOf(right1), valueOf(right2));
             }
         }
         else
         {
-            result = Integer.compare(Integer.valueOf(id1), Integer.valueOf(id2));
+            result = Integer.compare(valueOf(id1), valueOf(id2));
         }
         return result;
     }
 
     private void fillTagAssociationTable(Table<Entity> table, Map<String, Node> nodes, QuadFunction<Map<String, String>, Node, Tag, Integer> rowPopulator)
     {
-        nodes.values().forEach(node ->
-        {
-            List<Tag> tags = node.getTags();
+        nodes.keySet()
+             .stream()
+             .map(Integer::valueOf)
+             .sorted()
+             .map(Object::toString)
+             .forEach(nid -> {
+                 Node node = nodes.get(nid);
+                 List<Tag> tags = node.getTags();
+                 tags.sort((t1, t2) -> Integer.compare(valueOf(t1.getId()), valueOf(t2.getId())));
 
-            for (int tagIndex = 0; tagIndex < tags.size(); tagIndex++)
-            {
-                Tag tag = tags.get(tagIndex);
+                 for (int tagIndex = 0; tagIndex < tags.size(); tagIndex++)
+                 {
+                     Tag tag = tags.get(tagIndex);
 
-                Map<String, String> row = createRow();
+                     Map<String, String> row = createRow();
 
-                rowPopulator.apply(row, node, tag, tagIndex);
+                     rowPopulator.apply(row, node, tag, tagIndex);
 
-                table.addRow(row);
-            }
-        });
+                     table.addRow(row);
+                 }
+             });
     }
 
     private void fillFileAssociationTable(Table<Entity> table, Map<String, String> imageMap, Map<String, Node> nodes, Map<String, File> files, TernaryFunction<Map<String, String>, Node, File> rowPopulator)
     {
-        imageMap.forEach((nid, fid) ->
-        {
-            Map<String, String> row = createRow();
+        Map<String, String> reverseImageMap = imageMap.entrySet()
+            .stream()
+            .collect(toMap(
+                        Entry::getValue,
+                        Entry::getKey
+                    )
+            );
+        
+        reverseImageMap.keySet()
+            .stream()
+            .map(Integer::valueOf)
+            .sorted()
+            .map(Object::toString)
+            .forEach(fid -> {
+                String nid = reverseImageMap.get(fid);
 
-            rowPopulator.apply(row, nodes.get(nid), files.get(fid));
+                Map<String, String> row = createRow();
 
-            table.addRow(row);
-        });
+                rowPopulator.apply(row, nodes.get(nid), files.get(fid));
+
+                table.addRow(row);
+            });
     }
 
     private String generateUUID()
