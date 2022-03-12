@@ -189,7 +189,7 @@ public class DataExtractor extends TableWorker
                     }
                     else
                     {
-                        summary = row.get("summary_value");
+                        summary = row.get("body_summary");
                     }
                     node.setSummary(summary);
                     node.setBody(body);
