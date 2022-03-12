@@ -47,7 +47,7 @@ public class DataGenerator extends TableWorker
     {
         Map<String, String> formats = new HashMap<>();
         
-        formats.put("1", "basic_html");
+        formats.put("1", "restricted_html");
         formats.put("3", "full_html");
         
         return formats;
