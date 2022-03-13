@@ -46,6 +46,22 @@ public class Node extends Entity
         this.values = new ArrayList<>();
     }
 
+    /*
+     * Create a new node with the given ID from the given old node.
+     * We only set the attributes that do not contain the old ID.
+     */
+    public Node(String nid, Node oldNode)
+    {
+        this(nid, oldNode.type, oldNode.uid, oldNode.created, oldNode.changed, oldNode.title);
+        
+        this.summary = oldNode.summary;
+        this.body = oldNode.body;
+        this.bodyFormat = oldNode.bodyFormat;
+        this.reads = oldNode.reads;
+        this.lastRead = oldNode.lastRead;
+        this.tags.addAll(oldNode.getTags());
+    }
+
     public String getType()
     {
         return type;

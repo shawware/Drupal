@@ -11,9 +11,13 @@ import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * Facilitates the upgrade of a Drupal website.
@@ -79,34 +83,24 @@ public class DrupalUpgrader
 
         Map<String, String> imageMap = extractor.getImageMap(files, nodes);
         System.err.format("Images: %d%n", imageMap.size());
-        
+       
+        aliases.values()
+            .stream()
+            .collect(groupingBy(Alias::getPath))
+            .entrySet()
+            .stream()
+            .filter((e) -> e.getValue().size() > 1)
+            .map(Entry::getValue)
+            .collect(toList())
+            .forEach(System.err::println);
+
         DataRenumberer renumberer = new DataRenumberer();
         
-        renumberer.renumberFiles(files, imageMap);
-        renumberer.renumberAliases(aliases);
+        renumberer.renumberContent(3, nodes, values, files, imageMap, aliases);
 
         DataGenerator generator = new DataGenerator("sw_uhm", "d9c_");
 
-        Map<String, Tag> tagsSubset = new LinkedHashMap<>();
-        tagsSubset.put("1", tags.get("1"));
-        tagsSubset.put("9", tags.get("9"));
-        tagsSubset.put("10", tags.get("10"));
-        tagsSubset.put("56", tags.get("56"));
-
-        Map<String, Node> nodesSubset = new LinkedHashMap<>();
-        nodesSubset.put("97", nodes.get("97"));
-        nodesSubset.put("98", nodes.get("98"));
-
-        nodesSubset = nodes.values().stream()
-                .filter(node -> "image".equals(node.getType()))
-                .filter(node -> Integer.valueOf(node.getId()) > 13)
-                .collect(toMap(Node::getId, Function.identity()));
-
-        Map<String, Alias> aliasesSubset = aliases.values().stream()
-//                .filter(alias -> alias.getAlias().contains("football"))
-                .collect(toMap(Alias::getId, Function.identity()));
-
-        generator.generate(types, nodesSubset, tags, imageMap, files, aliasesSubset, values);
+        generator.generate(types, nodes, tags, imageMap, files, aliases, values);
 
         SqlGenerator sql = new SqlGenerator();
 

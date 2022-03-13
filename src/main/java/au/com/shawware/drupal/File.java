@@ -28,6 +28,11 @@ public class File extends Entity
         this.size = size;
     }
 
+    public File(String id, File oldFile)
+    {
+        this(id, oldFile.uid, oldFile.path, oldFile.mimeType, oldFile.size);
+    }
+
     public String getUid()
     {
         return uid;

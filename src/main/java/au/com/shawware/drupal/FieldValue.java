@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Holds a single value of a particular field. Most fields have just
- * a single value, however links have two, ie. the url and title.
+ * Holds a single value of a particular field. Most fields have just a
+ * single value. Fields with more than one can make use of the extra info.
  *
  * @author <a href="mailto:david.shaw@shawware.com.au">David Shaw</a>
  */
@@ -30,6 +30,13 @@ public class FieldValue extends Entity
         this.field = field;
         this.value = value;
         this.extra = new HashMap<>();
+    }
+
+    public FieldValue(String id, FieldValue oldValue)
+    {
+        this(id, oldValue.delta, oldValue.field, oldValue.value);
+        
+        this.extra.putAll(oldValue.extra);
     }
 
     public String getDelta()
