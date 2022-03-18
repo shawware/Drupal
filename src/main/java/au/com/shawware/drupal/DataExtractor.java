@@ -186,6 +186,7 @@ public class DataExtractor extends TableWorker
                         {
                             body = body.substring(2);
                         }
+                        body = summary + "\r\n\r\n" + body;
                     }
                     else
                     {
@@ -193,10 +194,6 @@ public class DataExtractor extends TableWorker
                     }
                     node.setSummary(summary);
                     node.setBody(body);
-                    if (body == null)
-                    {
-                        System.err.format("Node %s has null body%n", nid);
-                    }
                     String format = row.get("body_format");
                     if (format == null)
                     {
