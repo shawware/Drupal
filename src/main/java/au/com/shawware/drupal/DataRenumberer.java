@@ -7,12 +7,14 @@
 
 package au.com.shawware.drupal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -48,6 +50,12 @@ public class DataRenumberer
             addValues(newNode, oldNode.getValues());
             newNodes.put(newNid, newNode);
         }
+        
+        newNodes.values().forEach(node -> {
+            node.setSummary(node.getSummary().map((s) -> renumberPaths(nidMap, s)).orElse(null));
+            node.setBody(renumberPaths(nidMap, node.getBody()));
+        });
+
         nodes.clear();
         nodes.putAll(newNodes);
 
@@ -193,6 +201,44 @@ public class DataRenumberer
         return path;
     }
     
+    /*package*/ String renumberPaths(Map<String, String> nidMap, String text)
+    {
+        // Replace "internal:" links as D9 does not have this module.
+        String marker = "<a href=\"internal:";
+        if (text.contains(marker))
+        {
+            text = text.replaceAll(marker, "<a href=\"/");
+        }
+
+        marker = "<a href=\"/thing/";
+        if (text.contains(marker))
+        {
+            String[] elts = text.split(marker);
+
+            List<String> modifiedElements = new ArrayList<>();
+            modifiedElements.add(elts[0]);
+
+            for (int i = 1; i < elts.length; i++)
+            {
+                int index = elts[i].indexOf('"');
+                String oldNid = elts[i].substring(0, index);
+                if (nidMap.containsKey(oldNid))
+                {
+                    String newNid = nidMap.get(oldNid);
+                    String newLink = marker + newNid + elts[i].substring(index);
+                    modifiedElements.add(newLink);
+                }
+                else
+                {
+                    System.err.format("Unknown nid %s in text: %s%n", oldNid, text);
+                }
+            }
+            
+            text = modifiedElements.stream().collect(joining(""));
+        }
+        return text;
+    }
+
     private List<String> getSortedIds(Map<String, ? extends Entity> entities)
     {
         return entities.keySet()

@@ -41,7 +41,6 @@ public class DrupalUpgrader
 
     private DrupalUpgrader()
     {
-
     }
 
     private int run(String filename)
