@@ -368,7 +368,7 @@ public class DataGenerator extends TableWorker
                 .addNumeric("revision_id", Alias::getId)
                 .addText("uuid", (a) -> generateUUID())
                 .addText("langcode", (a) -> LANG_CODE)
-                .addText("path", (alias) -> "/" + alias.getPath())
+                .addText("path", (alias) -> "/" + convertPath(alias.getPath()))
                 .addText("alias", (alias) -> "/" + alias.getAlias())
                 .addNumeric("status", (a) -> "1")
                 .build();
@@ -377,7 +377,7 @@ public class DataGenerator extends TableWorker
                 .addNumeric("id", Alias::getId)
                 .addNumeric("revision_id", Alias::getId)
                 .addText("langcode", (a) -> LANG_CODE)
-                .addText("path", (alias) -> "/" + alias.getPath())
+                .addText("path", (alias) -> "/" + convertPath(alias.getPath()))
                 .addText("alias", (alias) -> "/" + alias.getAlias())
                 .addNumeric("status", (a) -> "1")
                 .addNumeric("revision_default", (a) -> "1")
@@ -385,6 +385,16 @@ public class DataGenerator extends TableWorker
 
         createAndStoreTable("path_alias", aliases, columns);
         createAndStoreTable("path_alias_revision", aliases, revisionColumns);
+    }
+
+    private String convertPath(String path)
+    {
+        final String marker = "image/tid/";
+        if (path.startsWith(marker))
+        {
+            path = "taxonomy/term/" + path.substring(marker.length());
+        }
+        return path;
     }
 
     private void addFiles(Map<String, File> files)
