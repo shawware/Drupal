@@ -9,7 +9,6 @@ package au.com.shawware.drupal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,12 +38,7 @@ public class DataExtractor extends TableWorker
 
     private Set<String> initHtmlFormats()
     {
-        Set<String> formats = new HashSet<>();
-        
-        formats.add("1");
-        formats.add("3");
-        
-        return formats;
+        return Set.of("1", "3");
     }
 
     /**

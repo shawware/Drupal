@@ -42,15 +42,12 @@ public class DataGenerator extends TableWorker
         this.htmlFormats = initHtmlFormats();
     }
 
-    // TODO: map to more appropriate type, eg. restricted_html.
     private Map<String, String> initHtmlFormats()
     {
-        Map<String, String> formats = new HashMap<>();
-        
-        formats.put("1", "restricted_html");
-        formats.put("3", "full_html");
-        
-        return formats;
+        return Map.of(
+                "1", "restricted_html",
+                "3", "full_html"
+        );
     }
 
     /**
