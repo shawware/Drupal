@@ -209,6 +209,11 @@ public class DataRenumberer
         {
             text = text.replaceAll(marker, "<a href=\"/");
         }
+        marker = "<img src=\"internal:";
+        if (text.contains(marker))
+        {
+            text = text.replaceAll(marker, "<img src=\"/");
+        }
 
         marker = "<a href=\"/thing/";
         if (text.contains(marker))
