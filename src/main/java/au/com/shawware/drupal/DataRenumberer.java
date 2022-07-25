@@ -62,7 +62,7 @@ public class DataRenumberer
         renumberValues(values, nidMap);
         renumberImageMap(imageMap, nidMap);
         renumberFiles(files, imageMap);
-        renumberAliases(aliases, nidMap);
+        renumberAliases(startingNode, aliases, nidMap);
     }
 
     private void addValues(Node newNode, List<FieldValue> values)
@@ -153,7 +153,7 @@ public class DataRenumberer
         }
     }
 
-    private void renumberAliases(Map<String, Alias> aliases, Map<String, String> nidMap)
+    private void renumberAliases(int startingNode, Map<String, Alias> aliases, Map<String, String> nidMap)
     {
         List<String> ids = getSortedIds(aliases);
         
@@ -161,7 +161,7 @@ public class DataRenumberer
         {
             String oldId = ids.get(id);
             Alias alias = aliases.remove(oldId);
-            alias = new Alias(String.valueOf(id + 1), convertPath(nidMap, alias.getPath()), convertAlias(nidMap, alias.getAlias()));
+            alias = new Alias(String.valueOf(startingNode + id), convertPath(nidMap, alias.getPath()), convertAlias(nidMap, alias.getAlias()));
             aliases.put(alias.getId(), alias);
         }
     }
